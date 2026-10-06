@@ -1,0 +1,77 @@
+﻿@page "/Autores/Create"
+@rendermode InteractiveServer
+@inject AutoresService autoresService
+
+<PageTitle> Crear Autor</PageTitle>
+
+<EditForm Model="Autor" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title mt-2"> Crear Autor </h5>
+            </div>
+
+            <div class="card-body">
+                @*IdAutor*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Id</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Autor.IdAutor" readonly></InputNumber>
+                </div>
+
+                @*Nombres*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombres</strong></label>
+                    <InputText class="form-control" @bind-Value="Autor.Nombres"></InputText>
+                    <ValidationMessage For="() => Autor.Nombres" />
+                </div>
+
+                @*Nacionalidad*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nacionalidad</strong></label>
+                    <InputText class="form-control" @bind-Value="Autor.Nacionalidad"></InputText>
+                    <ValidationMessage For="() => Autor.Nacionalidad" />
+                </div>
+
+                @*FechaNacimiento*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha de Nacimiento</strong></label>
+                    <InputDate class="form-control" @bind-Value="Autor.FechaNacimiento"></InputDate>
+                    <ValidationMessage For="() => Autor.FechaNacimiento" />
+                </div>
+
+                @*Sueldo*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Sueldo</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Autor.Sueldo"></InputNumber>
+                    <ValidationMessage For="() => Autor.Sueldo" />
+                </div>
+
+                <div class="card-footer text-center mr-3">
+                    <a href="/Autores/Index" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
+                    <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+@* @Mensaje *@
+
+@code {
+    public Autores Autor = new Autores();
+
+    private async Task Guardar()
+    {
+        bool guardado = await autoresService.Guardar(Autor);
+
+        if (guardado)
+        {
+            toastService.ShowSuccess("Autor Guardado Exitosamente");
+            navigationManager.NavigateTo("/Autores/Index");
+        }
+        else
+        {
+            toastService.ShowError("Error al Guardar el Autor");
+        }
+    }
+}

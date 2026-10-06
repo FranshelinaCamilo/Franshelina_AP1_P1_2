@@ -1,0 +1,145 @@
+﻿@page "/Autores/Index"
+@rendermode InteractiveServer
+
+<PageTitle> Registro de Autores</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-content-center mb-4">
+            <h5 class="card-title mt-2"> Registro de Autores </h5>
+            <a href="/Autores/Create" class="btn btn-primary"><span class="bi bi-plus-square mt-3"></span> Crear</a>
+        </div>
+
+        <div class="card-body">
+            @*Labels*@
+            <div class="row">
+
+                @*Filtrar Por*@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+
+                @*ValorFiltro*@
+                <div class="col-4">
+                    <label class="col-form-label"><strong>B&uacute;squeda</strong></label>
+                </div>
+            </div>
+
+            @*inputs y botones*@
+            <div class="row align-items-center">
+                @*Filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="Standard" selected disabled> Elija una opci&oacute;n</option>
+                        <option value="Nombres"> Nombre</option>
+                        <option value="Nacionalidad"> Nacionalidad</option>
+                        <option value="Sueldo"> Sueldo</option>
+                    </InputSelect>
+                </div>
+
+                @*Busqueda*@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid mt-2">
+                <QuickGrid Items="@itemsQueryable">
+                    <PropertyColumn property="@(a => a.IdAutor)" title="Autor" Sortable="true" Align="Align.Left" />
+                    <PropertyColumn property="@(a => a.Nombres)" title="Nombres" Sortable="true" Align="Align.Left" />
+                    <PropertyColumn property="@(a => a.Nacionalidad)" title="Nacionalidad" Sortable="true" Align="Align.Left" />
+                    <PropertyColumn property="@(a => a.FechaNacimiento)" title="Fecha de Nacimiento" Sortable="true" Align="Align.Left" />
+                    <PropertyColumn property="@(a => a.Sueldo)" title="Sueldo" Sortable="true" Align="Align.Left" />
+                    <TemplateColumn Title="Opciones">
+                        <a href="/Autores/Edit/@context.IdAutor" type="button" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                        <button class="btn btn-outline-danger bi bi-trash" data-bs-toggle="modal" data-bs-target="#modalEliminacion" @onclick="() => autor = context"></button>
+                    </TemplateColumn>
+                </QuickGrid>
+            </div>
+
+        </div>
+        <div class="card-footer d-flex justify-content-between align-center mb-4">
+            <label><strong>Cantidad: </strong>@itemsQueryable?.Count()</label>
+            <label><strong>Total Sueldos: </strong>$@itemsQueryable?.Sum(a => a.Sueldo)</label>
+        </div>
+    </div>
+</div>
+
+@*Modal eliminacion*@
+<div class="modal" id="modalEliminacion" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> Confirmar Eliminaci&oacute;n</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                @if (autor != null)
+                {
+
+                    <p>¿Esta seguro que desea eliminar este autor?</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Eliminar">Si</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    public IQueryable<Autores> itemsQueryable;
+    public Autores autor { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var items = await autoresService.GetList(a => true);
+        itemsQueryable = items.AsQueryable();
+    }
+
+    private async Task Buscar()
+    {
+        if(ValorFiltro.Trim() == "")
+        {
+            var items = await autoresService.GetList(a => true);
+            itemsQueryable = items.AsQueryable();
+        }
+        else if (ValorFiltro.Trim() != "" && Filtro == "Nombres")
+        {
+            var nombres = await autoresService.GetList(a => a.Nombres.ToLower().Contains(ValorFiltro));
+            itemsQueryable = nombres.AsQueryable();
+        }
+        else if (ValorFiltro.Trim() != "" && Filtro == "Nacionalidad")
+        {
+            var nacionalidad = await autoresService.GetList(a => a.Nacionalidad.ToLower().Contains(ValorFiltro));
+            itemsQueryable = nacionalidad.AsQueryable();
+        }
+        else if (ValorFiltro.Trim() != "" && Filtro == "Sueldo")
+        {
+            var sueldo = await autoresService.GetList(a => a.Sueldo.Equals(decimal.Parse(ValorFiltro)));
+            itemsQueryable = sueldo.AsQueryable();
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        bool eliminado = await autoresService.Eliminar(autor.IdAutor);
+
+        if (eliminado)
+        {
+            var items = await autoresService.GetList(a => true);
+            itemsQueryable = items.AsQueryable();
+            toastService.ShowSuccess("Autor Eliminado Exitosamente");
+        }
+        else
+        {
+            toastService.ShowError("Error al Eliminar el Autor");
+        }
+    }
+}

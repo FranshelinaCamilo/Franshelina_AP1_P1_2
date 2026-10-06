@@ -1,0 +1,126 @@
+﻿@page "/Autores/Edit/{IdAutor:int}"
+@rendermode InteractiveServer
+
+<PageTitle> Editar de Autor</PageTitle>
+
+<EditForm Model="Autor" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title mt-2"> Editar de Autor</h5>
+            </div>
+
+            <div class="card-body">
+                @*IdAutor*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Id</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Autor.IdAutor" readonly></InputNumber>
+                </div>
+
+                @*Nombres*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nombres</strong></label>
+                    <InputText class="form-control" @bind-Value="Autor.Nombres"></InputText>
+                    <ValidationMessage For="() => Autor.Nombres" />
+                </div>
+
+                @*Nacionalidad*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Nacionalidad</strong></label>
+                    <InputText class="form-control" @bind-Value="Autor.Nacionalidad"></InputText>
+                    <ValidationMessage For="() => Autor.Nacionalidad" />
+                </div>
+
+                @*FechaNacimiento*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha de Nacimiento</strong></label>
+                    <InputDate class="form-control" @bind-Value="Autor.FechaNacimiento"></InputDate>
+                    <ValidationMessage For="() => Autor.FechaNacimiento" />
+                </div>
+
+                @*Sueldo*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Sueldo</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Autor.Sueldo"></InputNumber>
+                    <ValidationMessage For="() => Autor.Sueldo" />
+                </div>
+
+            </div>
+            <div class="card-footer text-center mr-3">
+                <a href="/Autores/Index" type="button" class="btn btn-secondary mt-2"> <span class="bi bi-arrow-left" /> Volver</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy mt-2"> Guardar</button>
+                <button type="button" class="btn btn-danger bi bi-trash mt-2" data-bs-toggle="modal" data-bs-target="#modalEliminar"> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@*Modal de Eliminacion*@
+<div class="modal" id="modalEliminar" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> Confirmar Eliminaci&oacute;n</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                @if (Autor != null)
+                {
+                    <p>¿Desea borrar al autor @Autor.Nombres?</p>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Eliminar">Si</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">no</button>
+            </div>
+        </div>
+    </div>
+</div>
+@* 
+@Mensaje *@
+
+@code {
+    [Parameter]
+    public int IdAutor { get; set; }
+    public Autores Autor = new Autores();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var AutorEncontrado = await autoresService.Buscar(IdAutor);
+        if (AutorEncontrado != null)
+        {
+            Autor = AutorEncontrado;
+        }
+    }
+
+    private async Task Modificar()
+    {
+        bool modificado = await autoresService.Guardar(Autor);
+
+        if (modificado)
+        {
+            toastService.ShowSuccess("Autor Modificado Exitosamente");
+            navigationManager.NavigateTo("/Autores/Index");
+        }
+        else
+        {
+            toastService.ShowError("Error al Modificar el Autor");
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        bool eliminado = await autoresService.Eliminar(Autor.IdAutor);
+
+        if (eliminado)
+        {
+            toastService.ShowSuccess("Autor Eliminado Exitosamente");
+            navigationManager.NavigateTo("/Autores/Index");
+        }
+        else
+        {
+            toastService.ShowError("Error al Eliminar el Autor");
+        }
+    }
+}
