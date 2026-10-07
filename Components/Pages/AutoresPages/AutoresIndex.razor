@@ -54,7 +54,6 @@
                     <PropertyColumn property="@(a => a.Sueldo)" title="Sueldo" Sortable="true" Align="Align.Left" />
                     <TemplateColumn Title="Opciones">
                         <a href="/Autores/Edit/@context.IdAutor" type="button" class="btn btn-outline-primary bi bi-pencil-square"></a>
-                        <button class="btn btn-outline-danger bi bi-trash" data-bs-toggle="modal" data-bs-target="#modalEliminacion" @onclick="() => autor = context"></button>
                     </TemplateColumn>
                 </QuickGrid>
             </div>
@@ -63,29 +62,6 @@
         <div class="card-footer d-flex justify-content-between align-center mb-4">
             <label><strong>Cantidad: </strong>@itemsQueryable?.Count()</label>
             <label><strong>Total Sueldos: </strong>$@itemsQueryable?.Sum(a => a.Sueldo)</label>
-        </div>
-    </div>
-</div>
-
-@*Modal eliminacion*@
-<div class="modal" id="modalEliminacion" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"> Confirmar Eliminaci&oacute;n</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                @if (autor != null)
-                {
-
-                    <p>¿Esta seguro que desea eliminar este autor?</p>
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick="Eliminar">Si</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
         </div>
     </div>
 </div>
