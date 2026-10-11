@@ -72,6 +72,11 @@
         }
         else
         {
+            if (await autoresService.ExisteAutor(Autor.Nombres))
+            {
+                toastService.ShowError("Este autor ya fue registrado.");
+                return;
+            }
             toastService.ShowError("Error al Guardar el Autor");
         }
     }

@@ -16,6 +16,6 @@ public class Autores
     [Required(ErrorMessage = "Este campo es obligatorio")]
     public DateOnly? FechaNacimiento { get; set; }
 
-    [Range(1, double.MaxValue, ErrorMessage = "El suueldo debe ser mayor que 1")]
+    [Range(1, double.MaxValue, ErrorMessage = "El sueldo debe ser mayor que 1")]
     public double Sueldo { get; set; }
 }
