@@ -12,6 +12,10 @@ public class AutoresService(IDbContextFactory<Contexto> contextFactory) : IServi
     {
         if (!await Existe(autor.IdAutor))
         {
+            if(await ExisteAutor(autor.Nombres))
+            {
+                return false;
+            }
             return await Insertar(autor);
         }
         else
@@ -25,6 +29,13 @@ public class AutoresService(IDbContextFactory<Contexto> contextFactory) : IServi
         await using var contexto = await contextFactory.CreateDbContextAsync();
         return await contexto.Autores
             .AnyAsync(a => a.IdAutor == idAutor);
+    }
+
+    public async Task<bool> ExisteAutor(string nombres)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Autores
+            .AnyAsync(a => a.Nombres == nombres);
     }
 
     public async Task<bool> Insertar(Autores autor)
