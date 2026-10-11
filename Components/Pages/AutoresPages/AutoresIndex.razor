@@ -88,17 +88,17 @@
         }
         else if (ValorFiltro.Trim() != "" && Filtro == "Nombres")
         {
-            var nombres = await autoresService.GetList(a => a.Nombres.ToLower().Contains(ValorFiltro));
+            var nombres = await autoresService.GetList(a => a.Nombres.ToLower().Contains(ValorFiltro.ToLower()));
             itemsQueryable = nombres.AsQueryable();
         }
         else if (ValorFiltro.Trim() != "" && Filtro == "Nacionalidad")
         {
-            var nacionalidad = await autoresService.GetList(a => a.Nacionalidad.ToLower().Contains(ValorFiltro));
+            var nacionalidad = await autoresService.GetList(a => a.Nacionalidad.ToLower().Contains(ValorFiltro.ToLower()));
             itemsQueryable = nacionalidad.AsQueryable();
         }
         else if (ValorFiltro.Trim() != "" && Filtro == "Sueldo")
         {
-            var sueldo = await autoresService.GetList(a => a.Sueldo.Equals(decimal.Parse(ValorFiltro)));
+            var sueldo = await autoresService.GetList(a => a.Sueldo.Equals(double.Parse(ValorFiltro)));
             itemsQueryable = sueldo.AsQueryable();
         }
     }
