@@ -1,5 +1,7 @@
 ﻿@page "/Autores/Index"
 @rendermode InteractiveServer
+@inject AutoresService autoresService
+@inject ToastService toastService
 
 <PageTitle> Registro de Autores</PageTitle>
 <div class="container">
@@ -29,7 +31,7 @@
                 @*Filtro*@
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
-                        <option value="Standard" selected disabled> Elija una opci&oacute;n</option>
+                        <option value="" selected disabled> Elija una opci&oacute;n</option>
                         <option value="Nombres"> Nombre</option>
                         <option value="Nacionalidad"> Nacionalidad</option>
                         <option value="Sueldo"> Sueldo</option>
