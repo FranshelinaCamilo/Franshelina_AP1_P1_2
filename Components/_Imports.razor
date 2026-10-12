@@ -11,10 +11,12 @@
 @using Franshelina_AP1_P1_2.Components.Layout
 @using Franshelina_AP1_P1_2.Models
 @using Franshelina_AP1_P1_2.Services
-@using Franshelina_AP1_P1_2.Extensors
-@using Franshelina_AP1_P1_2.Context
-@inject AutoresService autoresService
+@using Franshelina_AP1_P1_2.Context;
 @inject NavigationManager navigationManager
-@using BlazorBootstrap
 @inject ToastService toastService
+@using BlazorBootstrap
+@using Franshelina_AP1_P1_2.Extensors
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using Aplicada1.Core;
+@using Microsoft.EntityFrameworkCore;
+@using System.Linq.Expressions;
